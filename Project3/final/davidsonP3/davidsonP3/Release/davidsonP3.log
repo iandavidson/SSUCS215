@@ -1,0 +1,11 @@
+﻿  Game.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  GameApp.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  GameWin.cpp
+  _WIN32_WINNT not defined. Defaulting to _WIN32_WINNT_MAXVER (see WinSDKVer.h)
+  Generating code
+  All 242 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  davidsonP3.vcxproj -> C:\Users\student\Desktop\project3\davidsonP3\Release\davidsonP3.exe
+  davidsonP3.vcxproj -> C:\Users\student\Desktop\project3\davidsonP3\Release\davidsonP3.pdb (Full PDB)

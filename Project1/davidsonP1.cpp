@@ -1,0 +1,455 @@
+//  Assignment :    Lab 4c
+//  File :  davidsonL04c.cpp
+//  Author : Ian Davidson
+//  Date : September 13, 2016
+//  Description : This program will read a list of words from a file
+//  It will then graphically list the amount of vowels,
+//  consonants, digits, and special charactes, and the total of each.
+//  Then the words will be sorted into alphabetical order then info will
+//  be printed again.
+
+#ifndef GRADE
+#define GRADE
+#include <cstring>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cstdlib>
+
+
+using namespace std;
+
+// MAXGRADES contains the maximum number of Assignments
+const int MAXGRADES = 100;
+
+
+class Grade
+// Definition of the class Grade and prototypes of member functions.
+{
+    
+public:
+    
+    Grade ();
+    void setGType (char gt);
+    void setDate (string dt);
+    void setScore (int scr);
+    void setPossible (int poss);
+    void setLetterGrade ();
+    void setTitle (string ttl);
+    char getGType () const;
+    string getDate () const;
+    int getScore () const;
+    int getPossible () const;
+    char getLetterGrade () const;
+    string getTitle () const;
+    void writeData (ostream & output) const;
+    bool operator > (const Grade & OtherGrade) const;
+    
+private:
+    
+    char gtype;
+    string date;
+    int score;
+    int possible;
+    char letter;
+    string title;
+    
+};
+
+
+
+
+// Prototypes for functions used by this program
+
+int ReadFile (ifstream & input, Grade gradeArray []);
+float WriteReport (ostream & output, const string & title,
+                   Grade gradeArray [], int first, int last);
+string getFinalGrade (float pct);
+void Swap (Grade & a, Grade & b);
+void WordSort (Grade gradeArray [], int N);
+
+int main ()
+{
+    // Declare an input file and open "grades.txt"
+    ifstream input ("grades.txt");
+    if (input.fail())
+    {
+        cout << "File: grades.txt not found\n";
+        exit (1);
+    }
+
+    
+    // Declare a pointer to an array of worddata objects to
+    // hold the words and their vowel, consonant, digit, and
+    // special character counts.
+    Grade gradeArray [MAXGRADES];
+    
+    // call the ReadFile function to read the file, store the
+    // words in a array and return the number of words read
+    // rom the file.
+    int count = ReadFile (input, gradeArray);
+    
+    string title = "All Grades";
+
+    // Call the WriteReport function to write the data
+    // stored in the array in a formatted fashion.
+    float allGradePct = WriteReport(cout, title , gradeArray, 0, count);
+    
+
+    // Call the WordSort function to sort the assignments into
+    // gtype, alphabetacal order.
+    WordSort(gradeArray, count);
+    
+    
+    //first sort
+    // call write report for homeowrk and lab, projects, quizes and tests, then call final percentage
+    // reassign title before each WriteReport call.
+    
+    // Call the WriteReport function to write the data
+    // stored in the array in a formatted fashion.
+    
+    
+    // Lines 113-142 figure out which element in gradeArray (already sorted), where the project/s
+    // start and the element where the quizzes and tests start in the array.
+    bool first = true;
+    bool second = true;
+    int proj;
+    int quTe;
+    int i = 0;
+    
+    while (second) {
+        if (first)
+        {
+            if (gradeArray[i].getGType() == 'P')
+            {
+                proj = i;
+                first = false;
+            }
+        }
+        if (second)
+        {
+            if (gradeArray[i].getGType() == 'Q' || gradeArray[i].getGType() == 'T')
+            {
+                quTe  = i;
+                second = false;
+            }
+        }
+        if (i == count)
+        {
+            break;
+        }
+        i++;
+    }
+    
+    title = "Homework and Labs";
+    float homeworkLabPct = WriteReport(cout, title , gradeArray, 0, proj);
+    
+    
+    title = "Projects";
+    float projectPct = WriteReport(cout, title , gradeArray, proj, quTe);
+    
+    
+    title = "Quizzes and Tests";
+    float quizTestPct = WriteReport(cout, title , gradeArray, quTe, count);
+    
+    // Find total percent, weighted.
+    float finalPercent = (homeworkLabPct * .2) + (projectPct * .3) + (quizTestPct * .5);
+    
+    // Write the final %, call funct
+    string finalLetterGrade = getFinalGrade(finalPercent);
+    
+    // Write last line
+    cout << "Overall Percentage: " << (finalPercent) << "%\tGrade: " << finalLetterGrade << endl;
+    
+    // Close the output
+    input.close();
+    
+    
+    return 0;
+    
+}
+
+// Implementation for functions used by this program
+
+
+int ReadFile (ifstream & input, Grade gradeArray [])
+// This function is used to get information from the
+{
+
+    char tempGType;
+    int count = 0;
+    while (input >> tempGType)
+    {
+        gradeArray[count].setGType(tempGType);
+
+        //read the date then sets
+        string tempDate;
+        input >> tempDate;
+        gradeArray[count].setDate(tempDate);
+
+        //read the score then sets
+        int tempScore;
+        input >> tempScore;
+        gradeArray[count].setScore(tempScore);
+
+        // read the possible then sets
+        int tempPossible;
+        input >> tempPossible;
+        gradeArray[count].setPossible(tempPossible);
+
+        // read the title then sets
+        string tempTitle;
+        string firstWordTitle;
+        string restOfTitle;
+        input >> firstWordTitle;
+        getline(input, restOfTitle);
+        tempTitle = firstWordTitle + restOfTitle;
+        gradeArray[count].setTitle(tempTitle);
+        
+        // sets lettergrade of instance
+        gradeArray[count].setLetterGrade();
+
+        count++;
+    }
+
+    //return the size of the gradeArray
+    return count;
+}
+
+
+float WriteReport (ostream & output, const string & title,
+                   Grade gradeArray [], int first, int last)
+// This function uses the parameters to write out each line of information (assignment) to output.
+// it then returns the percent of the all assignments which were included in the for loop.
+{
+    int totalearned = 0, totalpossible = 0;
+    output << title << " Report" << endl;
+    
+    output << setw (5) << left << "Type";
+    output << setw (5) << right << "Date";
+    output << setw (10) << right << "Score";
+    output << setw (10) << right<< "Possible";
+    output << setw (8) << right << "Grade" << "   ";
+    output << setw (40) << left << "Title" << endl;
+    
+    // loop here to write information about each assigment
+    for (int i = first; i < last; i++)
+    {
+        gradeArray[i].writeData(output);
+        totalearned += gradeArray[i].getScore();
+        totalpossible += gradeArray[i].getPossible();
+        
+    }
+    output << setw (5) << left << " ";
+    output << setw (5) << left << " ";
+    output << setw (10) << right << "---";
+    output << setw (10) << right << "---" << endl;
+
+    output << setw (5) << left << " ";
+    output << setw (5) << left << " ";
+    output << setw (10) << right << totalearned;
+    output << setw (10) << right << totalpossible << endl;
+    
+    float allPercent = 100.0 * totalearned/totalpossible;
+    output << title << " Percentage: " << setprecision(1) << fixed << allPercent << "%" << endl << endl;
+    
+    return allPercent;
+    
+}
+
+void WordSort (Grade gradeArray [], int N)
+{
+    int i = 1;
+    while (i < N)
+    {
+        int j = i;
+        while ( j > 0 && gradeArray[j-1] > gradeArray[j])
+        {
+            Swap (gradeArray[j-1], gradeArray[j]);
+            j--;
+        }
+        i++;
+    }
+}
+
+void Swap (Grade & a, Grade & b)
+{
+    Grade temp;
+    temp = a;
+    a = b;
+    b = temp;
+}
+
+string getFinalGrade (float pct)
+// this function returns the percent as a letter grade.
+// the var firstplace is used to find if there should be a "+" or a "-" on the letter grade
+{
+    string letter;
+    if (pct >= 90){
+        letter ="A";
+    }
+    else if (pct >= 80){
+        letter = "B";
+    }
+    else if (pct >= 70){
+        letter = "C";
+    }
+    else if (pct >= 60){
+        letter = "D";
+    }
+    else{
+        letter = "F";
+    }
+    
+    // using the modulo operator to get remainder of percent/10, so that either + or - can be
+    // added to the end of the letter grade.
+    int firstdigitPlace = int(pct) % 10;
+    if (firstdigitPlace < 3)
+    {
+        letter = letter + "-";
+    } else if (firstdigitPlace > 7)
+    {
+        letter = letter + "+";
+    }
+    
+    return letter;
+    
+}
+
+
+Grade::Grade()
+// gives default values to Grade objects
+{
+    gtype = '\0';
+    date = "";
+    score = 0;
+    possible = 0;
+    letter = '\0';
+    title = "";
+    
+}
+
+
+void Grade::setGType(char gt)
+// Sets the grade type member variable.
+{
+    this->gtype = gt;
+}
+
+void Grade::setDate(string dt)
+// Sets the Date member variable.
+{
+    this->date = dt;
+}
+
+void Grade::setScore(int scr)
+// Sets the Score member variable.
+{
+    this->score = scr;
+}
+
+void Grade::setPossible(int poss)
+// Sets the Possible member variable.
+{
+    this->possible = poss;
+}
+
+void Grade::setLetterGrade()
+// Sets the letter grade based off of the equation score/possible
+{
+    double percent = 100.0 * score/possible;
+    if (percent >= 90){
+        this->letter = 'A';
+    }
+    else if (percent >= 80){
+        this->letter = 'B';
+    }
+    else if (percent >= 70){
+        this->letter = 'C';
+    }
+    else if (percent >= 60){
+        this->letter = 'D';
+    }
+    else{
+        this->letter = 'F';
+    }
+}
+
+void Grade::setTitle (string title)
+// Sets member variable title to the value passed to the function
+{
+    this->title = title;
+}
+
+char Grade::getGType() const
+// Returns current value for gtype.
+{
+    return gtype;
+}
+string Grade::getDate() const
+// Returns current value for Date.
+{
+    return date;
+}
+int Grade::getScore() const
+// Returns current value for Score.
+{
+    return score;
+}
+int Grade::getPossible() const
+// Returns current value for Possible.
+{
+    return possible;
+}
+char Grade::getLetterGrade() const
+// Returns current value for Letter Grade
+{
+    return letter;
+}
+string Grade::getTitle() const
+// Returns current value for Title
+{
+    return title;
+}
+void Grade::writeData(ostream & outs) const
+// Writes all the values to output for the instance of the Grade data type;
+{
+    outs << setw(5) << left << gtype;
+    outs << setw(5) << right << date;
+    outs << setw(10) << right << score;
+    outs << setw(10) << right << possible;
+    outs << setw(8) << right << letter << "   ";
+    outs << setw(40) << left << title << endl;
+    
+    
+}
+
+bool Grade::operator > (const Grade & OtherGrade) const
+// True if this Grade object's GType is later in the alpha than the OtherGrade's Gtype.
+// False if this Grade's Gytype is earlier in alpha than the OtherGrade gtype.
+// If the gtypes are equal, return true if this Grade instance title is later in alpha than OtherGrade title.
+// Will return false if this Grade's gtype is equal to and procedes the OtherGrade's title.
+{
+    if (gtype > OtherGrade.gtype)
+    {
+        return true;
+    }
+    if (gtype < OtherGrade.gtype)
+    {
+        return false;
+    }
+    else
+    {
+        if (date > OtherGrade.date)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
+    
+}
+
+#endif

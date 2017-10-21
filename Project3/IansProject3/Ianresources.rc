@@ -1,0 +1,16 @@
+// File: resources.rc
+// Author: Ian Davidson 
+// Project: CS215 Project 3 Fall 2016
+// Description of file contents:
+
+BACKGROUND_BMP 	BITMAP	background.bmp
+
+WALL_BMP	BITMAP	wall.bmp
+
+PATH_BMP	BITMAP	path.bmp
+
+PLAYER_BMP	BITMAP	goodface.bmp
+
+GOAL_BMP	BITMAP	bluegoal.bmp	
+
+

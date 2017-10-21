@@ -1,0 +1,13 @@
+BACKGROUND_BMP 	BITMAP	background.bmp
+
+WALL_BMP	BITMAP	wall.bmp
+
+PATH1_BMP	BITMAP	path1.bmp
+
+PATH2_BMP	BITMAP	path2.bmp
+
+PLAYER_BMP	BITMAP	goodface.bmp
+
+GOAL_BMP	BITMAP	bluegoal.bmp	
+
+

@@ -1,0 +1,7 @@
+Q 10/03 8 10 Quiz 1 
+T 10/05 83 100 Exam 1 
+H 09/12 9 10 Homework 2 Game Programs 
+P 09/29 44 50 Project 1 Grade Calculation App 
+L 08/23 9 10 Lab 09 I/O and Strings 
+L 08/16 10 10 Lab 01 Review and Beginning C++ 
+H 08/22 10 10 Homework 1 Syllabus

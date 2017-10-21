@@ -1,0 +1,39 @@
+All Grades Report
+Type  Date     Score  Possible   Grade   Title                                   
+Q    10/03         8        10       B   Quiz 1                                  
+T    10/05        63       100       D   Exam 1                                  
+H    09/12        10        10       A   Homework 2 Game Programs                
+P    09/29        50        50       A   Project 1 Grade Calculation App         
+L    08/23        10        10       A   Lab 02 I/O and Strings                  
+L    08/16        10        10       A   Lab 01 Review and Beginning C++         
+H    08/22        10        10       A   Homework 1 Syllabus                     
+                 ---       ---
+                 161       200
+All Grades Percentage: 80.5%
+
+Homework and Labs Report
+Type  Date     Score  Possible   Grade   Title                                   
+H    08/22        10        10       A   Homework 1 Syllabus                     
+H    09/12        10        10       A   Homework 2 Game Programs                
+L    08/16        10        10       A   Lab 01 Review and Beginning C++         
+L    08/23        10        10       A   Lab 02 I/O and Strings                  
+                 ---       ---
+                  40        40
+Homework and Labs Percentage: 100.0%
+
+Projects Report
+Type  Date     Score  Possible   Grade   Title                                   
+P    09/29        50        50       A   Project 1 Grade Calculation App         
+                 ---       ---
+                  50        50
+Projects Percentage: 100.0%
+
+Quizzes and Tests Report
+Type  Date     Score  Possible   Grade   Title                                   
+Q    10/03         8        10       B   Quiz 1                                  
+T    10/05        63       100       D   Exam 1                                  
+                 ---       ---
+                  71       110
+Quizzes and Tests Percentage: 64.5%
+
+Overall Percentage: 82.3%     Grade: B-

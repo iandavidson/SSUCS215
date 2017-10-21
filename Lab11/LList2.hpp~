@@ -1,0 +1,286 @@
+#ifndef LLIST2_HPP
+#define LLIST2_HPP
+
+#include <iostream>
+using namespace std;
+
+enum dtype { FORWARD, BACKWARD };
+
+template <class LT> class LList2;
+template <class LT> ostream & operator <<
+        (ostream & outs, const LList2<LT> & L);
+
+template <class LT>
+class LList2
+{
+   private:
+      struct LNode
+      {
+         LNode ();
+         LT data;
+         LNode * next;
+         LNode * prev;
+      };
+
+   public:
+      LList2 ();
+      LList2 (const LList2 & other);
+      ~LList2 ();
+      LList2 & operator = (const LList2 & other);
+      bool operator == (const LList2 & other);
+      int Size () const;
+      void SetDirection (dtype dir);
+      dtype GetDirection () const;
+      friend ostream & operator << <>
+              (ostream & outs, const LList2<LT> & L);
+      bool InsertFirst (const LT & value);
+      bool InsertLast (const LT & value);
+      bool DeleteFirst ();
+      bool DeleteLast ();
+      void Forward (void function (const LT & param));
+      void Backward (void function (const LT & param));
+   private:
+      LNode * first;
+      LNode * last;
+      int size;
+      dtype direction;
+};
+
+
+template <class LT>
+LList2<LT>::LNode::LNode ()
+// This function will give default values to an instance of LNode.
+{
+    next = NULL;
+    prev = NULL;
+}
+/*
+template <class LT>
+void LList2<LT>::LNode::PrintNode(ostream &output)
+{
+  if (direction == FORWARD)
+    {
+      if (next != NULL)
+	next->PrintNode (output);
+      if (next != NULL)
+	output << ' ';
+    }
+  if (direction == BACKWARD)
+    {
+      
+
+
+    }
+    output << data;
+}
+*/
+template <class LT>
+LList2<LT>::LList2 ()
+// This function will set default values to a linked list.
+{
+    size = 0;
+    first = NULL;
+    last = NULL;
+    direction = FORWARD;
+}
+
+template <class LT>
+LList2<LT>::LList2 (const LList2 & other)
+{ // This function will
+  first = last = NULL;
+  size = 0;
+  for (LNode * n = other.first; n != NULL; n = n->next)
+  {
+    InsertLast(n->data);
+  }
+  direction = other.direction;
+}
+
+template <class LT>
+LList2<LT>::~LList2 ()
+{ // This function will delete an instance of LList and all of the LNodes assigned
+  while(first){
+      DeleteFirst();
+  }
+}
+
+template <class LT>
+LList2<LT> & LList2<LT>::operator = (const LList2<LT> & other)
+{ // This function will
+  if (this == &other)
+    return * this;
+  while (first)
+    DeleteFirst();
+  for (LNode * n = other.first; n != NULL; n = n->next)
+    InsertLast(n->data);
+  direction = other.direction;
+  return * this;
+}
+
+template <class LT>
+bool LList2<LT>::operator == (const LList2 & other)
+{ // This function will
+  if ( size != other.size)
+  {
+    return false;
+  }
+  LNode * np1 = first;
+  LNode * np2 = other.first;
+  while (np1 != NULL) {
+    if (np1->data != np2->data)
+      return false;
+    np1 = np1->next;
+    np2 = np2->next;
+  }
+  return true;
+}
+
+template <class LT>
+int LList2<LT>::Size () const
+{ // This function will return the size of the Linked List.
+  return size;
+}
+
+template <class LT>
+void LList2<LT>::SetDirection(dtype dir)
+{
+  direction = dir;
+}
+
+template <class LT>
+dtype LList2<LT>::GetDirection () const
+{
+  return direction;
+}
+
+template <class LT>
+ostream & operator << (ostream & outs, const LList2<LT> & L)
+// This function will traverse the list
+// output the data values, each followed by a space
+// return outs.
+{
+  if (L.first == NULL)
+    return outs;
+  if (L.direction == FORWARD)
+  {//print the list from the beginning to end
+    outs << L.first->data;
+    typename LList2<LT>::LNode * n;
+    for (n = L.first->next; n != NULL; n = n->next)
+      outs << ' ' << n->data;
+
+  }
+  else// L.direction == BACKWARD
+  {
+    outs << L.last->data;
+    typename LList2<LT>::LNode * p;
+    for (p = L.last->prev; p != NULL; p = p->prev)
+      outs << ' ' << p->data;
+  }
+  return outs;
+}
+
+template <class LT>
+bool LList2<LT>::InsertFirst (const LT & value)
+{ // This function will insert an LNode in the the front of the LL.
+  LNode * nnp =  new LNode; //allocate space for new node
+  if (nnp == NULL)//return false if space cannot be allocated for the node
+    {
+      return false;
+    }
+
+  if (size != 0)
+    first->prev = nnp;
+
+  if (size == 1)
+    last = nnp;
+  nnp->data = value; //set the data of the new node to the input value
+  nnp->next = first; // set the next of the new node to the current first
+  nnp->prev = NULL;
+  first = nnp;
+
+  size ++; // increment size
+  return true;
+  
+}
+
+template <class LT>
+bool LList2<LT>::InsertLast (const LT & value)
+{ // This function will insert an LNode into the back of the LL.
+  if (size == 0)
+  {
+    return InsertFirst(value);
+  }
+  LNode * n = new LNode;
+  if (n == NULL)
+  {
+    return false;
+  }
+  n->data = value;
+  n->next = NULL;
+  LNode * p;
+  for (p = first; p->next != NULL; p = p->next);
+  p->next = n;
+  n->prev = p;
+  size++;
+  return true;
+}
+
+template <class LT>
+bool LList2<LT>::DeleteFirst ()
+{ // This function will 
+  if (first == NULL)
+  {
+    return false;
+  }
+  LNode * temp = first;
+  first = temp->next;
+  //first->prev = ;
+
+  delete temp;
+  size--;
+  return true;
+}
+
+template <class LT>
+bool LList2<LT>::DeleteLast ()
+{ // This function will delete the last LNode of the LinkedList.
+  if (size == 0)//returning false if size is zero
+  {
+    return false;
+  }
+  /*
+  if(size == 1) //conditional to use DeleteFirst function for size of 1 elem.
+  {
+    return DeleteFirst();
+  }
+  */
+
+  LNode * n = last;
+  n = n->prev;
+  n->next = NULL;
+  last = n;
+  delete n;
+  size--;//makes size smaller by 1
+  return true;
+}
+
+void PrintValue (const  int & value)
+{
+  cout << "The value in the list is " << value << endl;
+}
+
+template <class LT>
+void LList2<LT>::Forward (void function (const LT & param))
+{
+  for (LNode * n = first; n; n = n->next)
+    function (n->data);
+
+}
+
+template <class LT>
+void LList2<LT>::Backward (void function (const LT & param)) {
+  for (LNode *n = last; n; n = n->prev)
+    function(n->data);
+
+}
+#endif

@@ -1,0 +1,32 @@
+// Assignment : Lab 01
+// File : DavidsonL01b.cpp
+// Author : Ian Davidson
+// Date : Fall 2016
+// Description : This program will write the words "Hello World"
+// on the standard console output screen.
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    //string name
+    string name;
+    //request user name
+    cout << "please enter your name: " << endl;
+    // Read the user's name from cin - the standard input - generally
+    // the keyboard
+    cin >> name;
+    // create message by concatenating the users name
+    string message = "Hello " + name;
+    // write the message to cout - standard output - generally the
+    //monitor
+    cout << endl << message;
+    // Follow the message by a blank line.
+    cout << endl << endl;
+    // Exit the program
+    return 0;
+
+}
